@@ -96,7 +96,7 @@ app.get('/users', function(req, res){
     });
 });
 
-app.patch('/users/:id', function(req, res) {
+app.patch('/users/:id', upload.single('image'), function(req, res) {
     const { Birthday, Gender, Image} = req.body;
 
     let id = parseInt(req.params.id);
@@ -177,8 +177,8 @@ app.get('/rack', function(req, res){
 
 });
 
-app.patch('/rack/:id', function(req, res) {
-    const { Title, Season, Item_type, Description, Image} = req.body;
+app.patch('/rack/:id', upload.single('image'), function(req, res) {
+    const { Title, Season, Item_type, Description} = req.body;
 
     let id = parseInt(req.params.id);
     Rack.findByPk(id)
@@ -188,7 +188,7 @@ app.patch('/rack/:id', function(req, res) {
             result.Season = Season;
             result.Item_type = Item_type;
             result.Description = Description;
-            result.Image = Image;
+            result.Image = req.file? req.file.filename:null;
             
             //save record back to database
             result.save().then(function(){
