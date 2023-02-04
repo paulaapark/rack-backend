@@ -1,4 +1,4 @@
-const environment = process.env.NODE_ENV || "production";//production or development
+const environment = process.env.NODE_ENV || "development";//production or development
 
 if(environment === 'production') {
     host = 'ao9moanwus0rjiex.cbetxkdyhwsb.us-east-1.rds.amazonaws.com';
