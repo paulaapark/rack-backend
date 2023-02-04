@@ -1,10 +1,10 @@
-const environment = process.env.NODE_ENV || "development";//production or development
+const environment = process.env.NODE_ENV || "production";//production or development
 
 if(environment === 'production') {
-    host = 'iu51mf0q32fkhfpl.cbetxkdyhwsb.us-east-1.rds.amazonaws.com';
-    database = 'pmgwgtbp5nsh0hox';
-    username = 'c0cnh90cdwwigw01';
-    password = 'bcir8ams7dq0ax8c';
+    host = 'ao9moanwus0rjiex.cbetxkdyhwsb.us-east-1.rds.amazonaws.com';
+    database = 'wj4a532o7deyy051';
+    username = 'y1srulg2vmsdu9qp';
+    password = 'v4wl2u9m6ym9mcxv';
     port = 3306;
 }else {
     host = 'localhost';
