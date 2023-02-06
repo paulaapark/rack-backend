@@ -36,6 +36,8 @@ let storage = multer.diskStorage({
     storage: storage
   });
 
+  //
+
 config.authenticate().then(function(){
     console.log('Database is connected.');
 }).catch(function(err){
@@ -97,7 +99,8 @@ app.get('/users', function(req, res){
 });
 
 app.patch('/users/:id', upload.single('image'), function(req, res) {
-    const { Birthday, Gender, Image} = req.body;
+    const { Birthday, Gender } = req.body;
+    const { Image } = req.file ? req.file.filename : null;
 
     let id = parseInt(req.params.id);
     User.findByPk(id)
@@ -179,6 +182,7 @@ app.get('/rack', function(req, res){
 
 app.patch('/rack/:id', upload.single('image'), function(req, res) {
     const { Title, Season, Item_type, Description} = req.body;
+    const { Image } = req.file ? req.file.filename : null;
 
     let id = parseInt(req.params.id);
     Rack.findByPk(id)
@@ -188,7 +192,7 @@ app.patch('/rack/:id', upload.single('image'), function(req, res) {
             result.Season = Season;
             result.Item_type = Item_type;
             result.Description = Description;
-            result.Image = req.file? req.file.filename:null;
+            result.Image = Image;
             
             //save record back to database
             result.save().then(function(){
