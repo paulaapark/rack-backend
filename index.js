@@ -183,20 +183,8 @@ app.get('/rack', function(req, res){
 
 app.patch('/rack/:id', upload.single('image'), function(req, res) {
     const { Title, Season, Item_type, Description} = req.body;
-    
-
-    // const updates = {
-    //     Title,
-    //     Season,
-    //     Item_type,
-    //     Description,
-    //     Image
-    // }
-
     let id = parseInt(req.params.id);
-    // Rack.findOneAndUpdate(id, {
-    //     $set: updates
-    // })
+    
     Rack.findByPk(id)
     .then(function(result){
         if(result){
@@ -216,8 +204,6 @@ app.patch('/rack/:id', upload.single('image'), function(req, res) {
                 res.send(err);
             });
 
-        
-
         }else{
             res.status(404).send('Item was not found');
         }
@@ -225,34 +211,6 @@ app.patch('/rack/:id', upload.single('image'), function(req, res) {
     .catch(function(err){
         res.send(err);
     });
-    // Rack.findByPk(id)
-    // .then(function(result){
-    //     if(result){
-    //         result.Title = Title;
-    //         result.Season = Season;
-    //         result.Item_type = Item_type;
-    //         result.Description = Description;
-            
-    //         if(req.file){
-    //             result.Image = Image;
-    //         }
-    //         //save record back to database
-    //         result.save().then(function(){
-    //             res.status(200).send(result);
-    //         })
-    //         .catch(function(err){
-    //             res.send(err);
-    //         });
-
-        
-
-    //     }else{
-    //         res.status(404).send('Item was not found');
-    //     }
-    // })
-    // .catch(function(err){
-    //     res.send(err);
-    // });
 });
 
 
