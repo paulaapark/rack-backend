@@ -27,6 +27,14 @@ const Rack = config.define('Rack', {
         type: Sequelize.STRING,
         allowNull: true
     },
+    Image2: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    Image3: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     User_id: {
         type: Sequelize.INTEGER,
         foreignKey: true
