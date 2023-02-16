@@ -16,6 +16,7 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const multer = require("multer");
+const fs = require('fs');
 
 app.use(cors());
 app.use(express.urlencoded({extended: false}));
@@ -193,8 +194,17 @@ app.patch('/rack/:id', upload.single('image'), function(req, res) {
             result.Item_type = Item_type;
             result.Description = Description;
             
+            //result.Image = current file name - delete this then below will add new one
+            
             if(req.file){
-                result.file = req.file? req.file.filename : null;
+                fs.unlink('./uploads/' + result.Image, (err) => {
+                    if (err) {
+                      console.error(err)
+                      return
+                    }
+                    console.log('old image deleted');
+                    });
+                result.Image = req.file? req.file.filename : null;
             }
             //save record back to database
             result.save().then(function(){
