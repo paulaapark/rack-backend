@@ -99,19 +99,39 @@ app.get('/users', function(req, res){
     });
 });
 
+app.get('/users/:id', function(req, res){
+    let id = parseInt(req.params.id);
+    User.findByPk(id)
+    .then(function(result){
+        res.status(200).send(result);
+    }).catch(function(err){
+        res.status(500).send(err);
+    });
+});
+
 
 app.patch('/users/:id', upload.single('image'), function(req, res) {
-    const { Birthday, Gender } = req.body;
-    const { Image } = req.file ? req.file.filename : null;
+    const { FirstName, LastName, Birthday, Gender } = req.body;
 
     let id = parseInt(req.params.id);
     User.findByPk(id)
     .then(function(result){
         if(result){
+            result.FirstName = FirstName;
+            result.LastName = LastName;
             result.Birthday = Birthday;
             result.Gender = Gender;
-            result.Image = Image;
             
+            if(req.file){
+                fs.unlink('./uploads/' + result.Image, (err) => {
+                    if (err) {
+                      console.error(err)
+                      return
+                    }
+                    console.log('old image deleted');
+                    });
+                result.Image = req.file? req.file.filename : null;
+            }
             //save record back to database
             result.save().then(function(){
                 res.status(200).send(result);
@@ -127,8 +147,6 @@ app.patch('/users/:id', upload.single('image'), function(req, res) {
     .catch(function(err){
         res.send(err);
     });
-    
-    // res.redirect('/details');
 });
 
 
