@@ -90,20 +90,24 @@ app.post('/login', async (req, res) => {
 
 //
 
-app.get('/users', function(req, res){
-    let user_data = {where: {}};
-    User.findAll(user_data).then(function(results){
-        res.status(200).send(results);
-    }).catch(function(err){
-        res.status(500).send(err);
-    });
-});
-
 app.get('/users/:id', function(req, res){
     let id = parseInt(req.params.id);
     User.findByPk(id)
     .then(function(result){
         res.status(200).send(result);
+    }).catch(function(err){
+        res.status(500).send(err);
+    });
+});
+
+app.get('/users', function(req, res){
+    let user_data = {where: {}};
+
+    if(req.query.id !== undefined){
+        user_data.where.id = req.query.id;
+    };
+    User.findAll(user_data).then(function(results){
+        res.status(200).send(results);
     }).catch(function(err){
         res.status(500).send(err);
     });
