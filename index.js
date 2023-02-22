@@ -115,7 +115,7 @@ app.get('/users', function(req, res){
 
 
 app.patch('/users/:id', upload.single('image'), function(req, res) {
-    const { FirstName, LastName, Birthday, Gender } = req.body;
+    const { FirstName, LastName, Birthday, Gender, Email, Password } = req.body;
 
     let id = parseInt(req.params.id);
     User.findByPk(id)
@@ -125,7 +125,22 @@ app.patch('/users/:id', upload.single('image'), function(req, res) {
             result.LastName = LastName;
             result.Birthday = Birthday;
             result.Gender = Gender;
-            
+            result.Email = Email;
+            result.Password = Password;
+
+            //The logic seems wrong. revisit this.
+            // if(Password){
+            //     bcrypt.compare(Password, result.Password, function(err, output) {
+            //         console.log(output);
+            //         if(output){
+            //             res.status(200).send(result);
+            //             result.Password = Password;
+            //         }else{
+            //             res.status(400).send('Incorrect password.');
+            //         }
+            //     });
+            // }
+
             if(req.file){
                 fs.unlink('./uploads/' + result.Image, (err) => {
                     if (err) {
