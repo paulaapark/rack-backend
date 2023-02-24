@@ -13,7 +13,7 @@ const User = config.define('User', {
     },
     LastName: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     Email: {
         type: Sequelize.STRING,
@@ -33,13 +33,23 @@ const User = config.define('User', {
         allowNull: true
     },
     Gender: {
-        type: Sequelize.ENUM('female', 'male', 'non-binary', 'prefer not to answer'),
-        allowNull: true
+        type: Sequelize.ENUM('Female', 'Male', 'Non-binary', 'Unselected'),
+        allowNull: true,
+        defaultValue: 'Unselected'
     },
     Image: {
         type: Sequelize.STRING,
         allowNull: true
-    }  
+    },
+    Language: {
+        type: Sequelize.ENUM('English'),
+        defaultValue: 'English'
+    },
+    City_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        foreignKey: true
+    },  
 
 }, {timestamps: false});
 

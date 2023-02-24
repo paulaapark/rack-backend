@@ -4,12 +4,15 @@ const config = require('./config');
 
 const User = require('./models/user');
 const Rack = require('./models/rack');
+const City = require ('./models/city');
 
 //Associations
-User.hasMany(Rack, {
-    foreignKey: 'User_id'
-});
+User.hasMany(Rack, {foreignKey: 'User_id'});
 Rack.belongsTo(User, {foreignKey: 'User_id'});
+
+// City.hasMany(User, {foreignKey: 'City_id'});
+// User.belongsTo(City, {foreignKey: 'City_id'});
+
 
 const cors = require('cors');
 
@@ -90,6 +93,28 @@ app.post('/login', async (req, res) => {
 
 //
 
+app.get('/cities/:id', function(req, res){
+    let id = parseInt(req.params.id);
+    City.findByPk(id)
+    .then(function(result){
+        res.status(200).send(result);
+    }).catch(function(err){
+        res.status(500).send(err);
+    });
+});
+
+app.get('/cities', function (req,res){
+    let data = {where: {}};
+    if(req.query.id !== undefined){
+        data.where.id = req.query.id;
+    };
+    City.findAll(data).then(function(results){
+        res.status(200).send(results);
+    }).catch(function(err){
+        res.status(500).send(err);
+    });
+});
+
 app.get('/users/:id', function(req, res){
     let id = parseInt(req.params.id);
     User.findByPk(id)
@@ -113,33 +138,46 @@ app.get('/users', function(req, res){
     });
 });
 
-
-app.patch('/users/:id', upload.single('image'), function(req, res) {
-    const { FirstName, LastName, Birthday, Gender, Email, Password } = req.body;
+app.patch('/users/details/:id', upload.single('image'), function(req, res) {
+    const { Birthday, Gender, City_id } = req.body;
 
     let id = parseInt(req.params.id);
     User.findByPk(id)
     .then(function(result){
         if(result){
-            result.FirstName = FirstName;
-            result.LastName = LastName;
-            result.Birthday = Birthday;
-            result.Gender = Gender;
-            result.Email = Email;
-            result.Password = Password;
+                result.Birthday = Birthday;
+                result.Gender = Gender;
+                result.City_id = City_id;
+                result.Image = req.file? req.file.filename : null;
 
-            //The logic seems wrong. revisit this.
-            // if(Password){
-            //     bcrypt.compare(Password, result.Password, function(err, output) {
-            //         console.log(output);
-            //         if(output){
-            //             res.status(200).send(result);
-            //             result.Password = Password;
-            //         }else{
-            //             res.status(400).send('Incorrect password.');
-            //         }
-            //     });
-            // }
+            result.save().then(function(){
+                res.status(200).send(result);
+            })
+            .catch(function(err){
+                res.send(err);
+            });
+
+        }else{
+            res.status(404).send('User was not found');
+        }
+    })
+    .catch(function(err){
+        res.send(err);
+    });
+});
+
+
+app.patch('/users/:id', upload.single('image'), function(req, res) {
+    const { FirstName, LastName, Birthday, Gender } = req.body;
+
+    let id = parseInt(req.params.id);
+    User.findByPk(id)
+    .then(function(result){
+        if(result){
+                result.FirstName = FirstName;
+                result.LastName = LastName;
+                result.Birthday = Birthday;
+                result.Gender = Gender;
 
             if(req.file){
                 fs.unlink('./uploads/' + result.Image, (err) => {
@@ -152,6 +190,41 @@ app.patch('/users/:id', upload.single('image'), function(req, res) {
                 result.Image = req.file? req.file.filename : null;
             }
             //save record back to database
+            result.save().then(function(){
+                res.status(200).send(result);
+            })
+            .catch(function(err){
+                res.send(err);
+            });
+
+        }else{
+            res.status(404).send('User was not found');
+        }
+    })
+    .catch(function(err){
+        res.send(err);
+    });
+});
+
+app.get('/users/lr/:id', function(req, res){
+    let id = parseInt(req.params.id);
+    User.findByPk(id)
+    .then(function(result){
+        res.status(200).send(result);
+    }).catch(function(err){
+        res.status(500).send(err);
+    });
+});
+
+
+app.patch('/users/lr/:id', function(req, res) {
+    const { City_id } = req.body;
+
+    let id = parseInt(req.params.id);
+    User.findByPk(id)
+    .then(function(result){
+        if(result){
+                result.City_id = City_id;
             result.save().then(function(){
                 res.status(200).send(result);
             })
@@ -290,3 +363,19 @@ app.delete('/rack/:id', function(req, res){
 app.listen(process.env.PORT || 3000, function(){
     console.log('Server running on port 3000...')
 });
+
+
+
+
+//The logic seems wrong. revisit this.
+            // if(Password){
+            //     bcrypt.compare(Password, result.Password, function(err, output) {
+            //         console.log(output);
+            //         if(output){
+            //             res.status(200).send(result);
+            //             result.Password = Password;
+            //         }else{
+            //             res.status(400).send('Incorrect password.');
+            //         }
+            //     });
+            // }
