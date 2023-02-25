@@ -139,16 +139,19 @@ app.get('/users', function(req, res){
 });
 
 app.patch('/users/details/:id', upload.single('image'), function(req, res) {
-    const { Birthday, Gender, City_id } = req.body;
+    // const { Birthday, Gender } = req.body;
+    // const City_id = req.body.City_id;
 
     let id = parseInt(req.params.id);
     User.findByPk(id)
     .then(function(result){
         if(result){
-                result.Birthday = Birthday;
-                result.Gender = Gender;
-                result.City_id = City_id;
-                result.Image = req.file? req.file.filename : null;
+                result.Birthday = req.body.Birthday;
+                result.Gender = req.body.Gender;
+                result.City_id = req.body.City_id;
+                if(req.file){
+                    result.Image = req.file? req.file.filename : null;
+                };
 
             result.save().then(function(){
                 res.status(200).send(result);
@@ -219,7 +222,6 @@ app.get('/users/lr/:id', function(req, res){
 
 app.patch('/users/lr/:id', function(req, res) {
     const  City_id  = req.body.City_id;
-    console.log(City_id);
     let id = parseInt(req.params.id);
     User.findByPk(id)
     .then(function(result){
