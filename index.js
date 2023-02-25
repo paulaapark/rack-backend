@@ -218,11 +218,12 @@ app.get('/users/lr/:id', function(req, res){
 
 
 app.patch('/users/lr/:id', function(req, res) {
-    const { City_id } = req.body;
-
+    const  City_id  = req.body.City_id;
+    console.log(City_id);
     let id = parseInt(req.params.id);
     User.findByPk(id)
     .then(function(result){
+        console.log(result);
         if(result){
                 result.City_id = City_id;
             result.save().then(function(){
